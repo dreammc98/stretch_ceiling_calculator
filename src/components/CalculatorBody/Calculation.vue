@@ -125,7 +125,7 @@ function getCurrencyDeclension(amount) {
   z-index: 90;
 
   @media screen and (max-width: 450px) {
-    padding: 23px 0;
+    padding: 10px 0 0 0;
   }
 }
 

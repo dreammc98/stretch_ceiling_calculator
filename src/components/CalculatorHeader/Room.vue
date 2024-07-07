@@ -47,7 +47,7 @@ const classActiveRoom = (id) => {
 .list__item {
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 18px;
   background-color: var(--gray-bg-color);
 
   font-family: "Futura PT Book";

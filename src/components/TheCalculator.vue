@@ -25,9 +25,9 @@ const id = ref(v1());
 
 const rooms = reactive([
   { id: v1(), title: "Комната №1" },
-  { id: v1(), title: "№2" },
-  { id: v1(), title: "№3" },
-  { id: v1(), title: "№4" },
+  // { id: v1(), title: "№2" },
+  // { id: v1(), title: "№3" },
+  // { id: v1(), title: "№4" },
 ]);
 const currentRoom = ref(rooms[0].id);
 
@@ -51,6 +51,7 @@ const setCurrentRoom = (id) => {
   }
   @media screen and (max-width: 695px) {
     font-size: 26px;
+    margin-bottom: 10px;
   }
 }
 

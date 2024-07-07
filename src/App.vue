@@ -19,7 +19,7 @@ ul {
 
 .main {
   width: 100vw;
-  min-width: 414px;
+  min-width: 410px;
   height: 100vh;
   background-image: url("assets/img/main-background.png");
   background-size: cover;
