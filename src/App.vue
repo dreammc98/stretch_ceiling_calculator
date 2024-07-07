@@ -1,27 +1,39 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div class="main"><TheCalculatorVue /></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
-
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-});
+<script setup>
+import TheCalculatorVue from "./components/TheCalculator.vue";
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style: none;
+}
+
+.main {
+  width: 100vw;
+  min-width: 414px;
+  height: 100vh;
+  background-image: url("assets/img/main-background.png");
+  background-size: cover;
+  padding: 0 105px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Futura PT Book";
+  @media screen and (max-width: 1300px) {
+    padding: 0 30px;
+  }
+  @media screen and (max-width: 450px) {
+    padding: 0 20px;
+    background-image: none;
+  }
 }
 </style>
