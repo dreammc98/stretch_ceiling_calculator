@@ -1,63 +1,62 @@
 <template>
   <div class="digital">
     <h3>{{ title }}:</h3>
+
     <div class="wrapper__input">
-      <button class="btn" @click="decrease">
+      <button class="btn" @click="decrement">
         <Icon name="minus" />
       </button>
 
       <div class="input__field">
         <input
-          v-model.number="inputValue"
           @keypress="validateKeypress"
-          @input="notifyParent"
+          v-model="room.inputs[property]"
           type="number"
+          @input="validateInput"
         />
+
         <span>{{ sign }}</span>
       </div>
-
       <button class="btn" @click="increase">
         <Icon name="plus" />
       </button>
     </div>
+    <span v-if="warning" style="font-size: 10px">{{ warning }}</span>
   </div>
 </template>
 
 <script setup>
 import Icon from "@/components/Icon.vue";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
+import { useStore } from "vuex";
 
 const props = defineProps({
   title: String,
-  startValue: Number,
   sign: String,
-  inputName: String,
-  onUpdate: Function,
   property: String,
 });
 
-const inputValue = ref(props.startValue);
+const store = useStore();
+const selectedRoomId = computed(() => store.state.selectedRoomId);
+const room = computed(() => store.state.rooms.find((room) => room.id === selectedRoomId.value));
 
+const decrement = () => store.commit("decrementInput", props.property);
+const increase = () => store.commit("increaseInput", props.property);
+
+const validateInput = (event) => {
+  if (room.value.inputs[props.property] < 10 && props.property === "area") {
+    room.value.inputs[props.property] = 10;
+  }
+  if (room.value.inputs[props.property] < 1 && props.property === "corners") {
+    room.value.inputs[props.property] = 1;
+  }
+};
 const validateKeypress = (event) => {
   if (!/^\d*$/.test(event.key)) {
     event.preventDefault();
   }
-};
 
-const decrease = () => {
-  if (inputValue.value > 1) {
-    inputValue.value -= 1;
-  }
-  notifyParent();
-};
-
-const increase = () => {
-  inputValue.value += 1;
-  notifyParent();
-};
-
-const notifyParent = () => {
-  props.onUpdate(inputValue.value, props.property);
+  const warning = store.state.warning;
 };
 </script>
 

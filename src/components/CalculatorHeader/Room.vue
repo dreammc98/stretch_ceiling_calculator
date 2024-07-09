@@ -1,15 +1,25 @@
 <template>
   <ul class="list">
     <li
-      @click="handleClick(room.id)"
-      v-for="room in rooms"
-      :key="room.id"
+      @click="selectRoom(tab.id)"
+      v-for="tab in tabs"
+      :key="tab.id"
       class="list__item"
-      :class="classActiveRoom(room.id)"
+      :class="classActiveRoom(tab.id)"
     >
-      {{ room.title }}
+      <span :class="tab.id === selectedRoomId && selectedRoomId !== 1 && 'title'">{{
+        tab.title
+      }}</span>
+      <Icon
+        v-if="tab.id === selectedRoomId && selectedRoomId !== 1"
+        name="close"
+        viewBox="0 0 24 24"
+        width="24"
+        height="24"
+        :class="tab.id === selectedRoomId && 'icon-close'"
+      />
     </li>
-    <li class="list__item">
+    <li class="list__item" @click="addNewRoom">
       <Icon :name="'plus-add-room'" class="icon" />
       Добавить комнату
     </li>
@@ -18,21 +28,24 @@
 
 <script setup>
 import Icon from "@/components/Icon.vue";
-import { computed, ref } from "vue";
+import { computed } from "vue";
+import { useStore } from "vuex";
 
-const props = defineProps({
-  rooms: Object,
-  currentRoom: String,
-});
+const store = useStore();
+const tabs = computed(() => store.state.rooms);
 
-const emit = defineEmits(["send-id"]);
-
-const handleClick = (id) => {
-  emit("send-id", id);
+const selectRoom = (roomId) => {
+  store.dispatch("selectRoom", roomId);
 };
 
+const addNewRoom = () => {
+  store.dispatch("addRoomAndSelect");
+};
+
+const selectedRoomId = computed(() => store.state.selectedRoomId);
+
 const classActiveRoom = (id) => {
-  return props.currentRoom === id ? "list__item-active" : "";
+  return selectedRoomId.value === id ? "list__item-active" : "";
 };
 </script>
 
@@ -54,11 +67,27 @@ const classActiveRoom = (id) => {
   font-size: 18px;
   color: #333333;
   z-index: 100;
+  position: relative;
 
   &:hover {
     cursor: pointer;
   }
   transition: all 0.3s linear;
+
+  .icon-close {
+    display: none;
+  }
+  &:hover .title {
+    visibility: hidden;
+  }
+
+  &:hover .icon-close {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .list__item-active {

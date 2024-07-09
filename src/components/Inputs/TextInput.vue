@@ -1,10 +1,10 @@
 <template>
-  <div class="digital">
+  <div class="digital" v-click-outside="closeDropdown">
     <h3>{{ title }}</h3>
 
     <div class="wrapper__input" @click="handleIsDrop">
       <div class="input__field">
-        <input type="text" :value="inputText" readonly />
+        {{ room.inputs[property] }}
         <button class="pointer">
           <Icon
             :class="dropDawn && 'pointer-svg'"
@@ -24,8 +24,8 @@
               v-for="(item, index) in arr"
               :key="index"
               class="drop-down-item"
-              :class="item === currentItem && 'drop-down-item-active'"
-              @click="sendIdToParent(item)"
+              :class="item === room.inputs[property] && 'drop-down-item-active'"
+              @click="updateValue(item)"
             >
               {{ item }}
             </li>
@@ -39,26 +39,34 @@
 <script setup>
 import "animate.css";
 import Icon from "@/components/Icon.vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useStore } from "vuex";
 
 const props = defineProps({
   title: String,
-  arr: Object,
-  handleUpdateText: Function,
+  arr: Array,
   property: String,
-  inputText: String,
 });
 
-const currentItem = ref(props.inputText);
+const store = useStore();
+
+const selectedRoomId = computed(() => store.state.selectedRoomId);
+
+const room = computed(() => store.state.rooms.find((room) => room.id === selectedRoomId.value));
 
 const dropDawn = ref(false);
-const handleIsDrop = () => {
+
+const handleIsDrop = (event) => {
+  event.stopPropagation();
   dropDawn.value = !dropDawn.value;
 };
 
-const sendIdToParent = (inputText) => {
-  props.handleUpdateText(inputText, props.property);
-  currentItem.value = inputText;
+const closeDropdown = () => {
+  dropDawn.value = false;
+};
+
+const updateValue = (newValue) => {
+  room.value.inputs[props.property] = newValue;
 };
 </script>
 
@@ -90,17 +98,8 @@ const sendIdToParent = (inputText) => {
   justify-content: space-between;
   width: 100%;
   gap: 4px;
-
-  input {
-    border: 0;
-    background-color: transparent;
-    font-family: "Futura PT Book";
-    font-size: 18px;
-
-    &:focus {
-      outline: none;
-    }
-  }
+  font-family: "Futura PT Book";
+  font-size: 18px;
 }
 
 .drop-down {
@@ -133,6 +132,7 @@ const sendIdToParent = (inputText) => {
 .drop-down-item-active {
   background-color: white;
   transform: scale(1.01);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 .pointer {
